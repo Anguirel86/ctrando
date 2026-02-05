@@ -89,7 +89,7 @@ class ShopOptions:
         ctenums.ItemID.OBJECTIVE_2, ctenums.ItemID.OBJECTIVE_3,
         ctenums.ItemID.OBJECTIVE_4, ctenums.ItemID.OBJECTIVE_5,
         ctenums.ItemID.OBJECTIVE_6, ctenums.ItemID.OBJECTIVE_7,
-        ctenums.ItemID.OBJECTIVE_8, ctenums.ItemID.UNUSED_49,
+        ctenums.ItemID.OBJECTIVE_8, ctenums.ItemID.APITEM,
         ctenums.ItemID.UNUSED_4A, ctenums.ItemID.UNUSED_56,
         ctenums.ItemID.UNUSED_57, ctenums.ItemID.UNUSED_58,
         ctenums.ItemID.UNUSED_59, ctenums.ItemID.UNUSED_EC,
