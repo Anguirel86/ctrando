@@ -25,7 +25,7 @@ _restricted_items = frozenset([
     ctenums.ItemID.OBJECTIVE_7, ctenums.ItemID.OBJECTIVE_8, ctenums.ItemID.MASAMUNE_1,
     ctenums.ItemID.MASAMUNE_2, ctenums.ItemID.FIST, ctenums.ItemID.FIST_2,
     ctenums.ItemID.FIST_3, ctenums.ItemID.IRON_FIST, ctenums.ItemID.BRONZEFIST,
-    ctenums.ItemID.PACIFIST, ctenums.ItemID.UNUSED_4A,
+    ctenums.ItemID.PACIFIST, ctenums.ItemID.APITEM,
     ctenums.ItemID.BENT_HILT, ctenums.ItemID.BENT_SWORD,
     ctenums.ItemID.MASAMUNE_0_ATK,
     ctenums.ItemID.UNUSED_56, ctenums.ItemID.UNUSED_57, ctenums.ItemID.UNUSED_58,
@@ -357,6 +357,3 @@ def apply_reward_rando(
     #
     #     if has_charm or has_drop:
     #         print(f"{stats.name}\t{stats.charm_item}\t{stats.drop_item}")
-
-
-

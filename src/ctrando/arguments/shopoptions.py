@@ -131,18 +131,18 @@ _shop_keyword_dict.update({
     "accessory_d": (ctenums.ItemID.WALLET, ctenums.ItemID.CHARM_TOP, ctenums.ItemID.THIRD_EYE),
     "accessory_c": (ctenums.ItemID.RIBBON, ctenums.ItemID.POWERGLOVE, ctenums.ItemID.DEFENDER, ctenums.ItemID.SIGHTSCOPE),
     "accessory_b": (
-        ctenums.ItemID.BANDANA, ctenums.ItemID.POWERSCARF, ctenums.ItemID.MAGICSCARF, 
+        ctenums.ItemID.BANDANA, ctenums.ItemID.POWERSCARF, ctenums.ItemID.MAGICSCARF,
         ctenums.ItemID.MUSCLERING, ctenums.ItemID.BERSERKER, ctenums.ItemID.RAGE_BAND
     ),
     "accessory_a": (
-        ctenums.ItemID.HIT_RING, ctenums.ItemID.POWER_RING, ctenums.ItemID.MAGIC_RING, 
-        ctenums.ItemID.FRENZYBAND, ctenums.ItemID.WALL_RING, ctenums.ItemID.MAGIC_SEAL, 
+        ctenums.ItemID.HIT_RING, ctenums.ItemID.POWER_RING, ctenums.ItemID.MAGIC_RING,
+        ctenums.ItemID.FRENZYBAND, ctenums.ItemID.WALL_RING, ctenums.ItemID.MAGIC_SEAL,
         ctenums.ItemID.SPEED_BELT, ctenums.ItemID.SILVERSTUD, ctenums.ItemID.SILVERERNG
     ),
     "accessory_s": (
-        ctenums.ItemID.GREENDREAM, ctenums.ItemID.POWER_SEAL, ctenums.ItemID.GOLD_ERNG, 
-        ctenums.ItemID.GOLD_STUD, ctenums.ItemID.SUN_SHADES, ctenums.ItemID.PRISMSPECS, 
-        ctenums.ItemID.DASH_RING, ctenums.ItemID.AMULET, ctenums.ItemID.FLEA_VEST, 
+        ctenums.ItemID.GREENDREAM, ctenums.ItemID.POWER_SEAL, ctenums.ItemID.GOLD_ERNG,
+        ctenums.ItemID.GOLD_STUD, ctenums.ItemID.SUN_SHADES, ctenums.ItemID.PRISMSPECS,
+        ctenums.ItemID.DASH_RING, ctenums.ItemID.AMULET, ctenums.ItemID.FLEA_VEST,
         ctenums.ItemID.DRAGON_TEAR, ctenums.ItemID.VALOR_CREST
     ) + (
         ctenums.ItemID.POWER_SEAL, ctenums.ItemID.POWER_SEAL,
@@ -153,8 +153,8 @@ _shop_keyword_dict.update({
         ctenums.ItemID.WHITE_ROCK, ctenums.ItemID.SILVERROCK
     ),
     "key_nonprogression": (
-        ctenums.ItemID.PETAL, ctenums.ItemID.FANG, ctenums.ItemID.HORN, 
-        ctenums.ItemID.FEATHER, ctenums.ItemID.PETALS_2, ctenums.ItemID.FANGS_2, 
+        ctenums.ItemID.PETAL, ctenums.ItemID.FANG, ctenums.ItemID.HORN,
+        ctenums.ItemID.FEATHER, ctenums.ItemID.PETALS_2, ctenums.ItemID.FANGS_2,
         ctenums.ItemID.HORNS_2, ctenums.ItemID.FEATHERS_2,
     ),
     "key_progression": (
@@ -233,7 +233,7 @@ class ShopOptions:
         ctenums.ItemID.OBJECTIVE_2, ctenums.ItemID.OBJECTIVE_3,
         ctenums.ItemID.OBJECTIVE_4, ctenums.ItemID.OBJECTIVE_5,
         ctenums.ItemID.OBJECTIVE_6, ctenums.ItemID.OBJECTIVE_7,
-        ctenums.ItemID.OBJECTIVE_8,
+        ctenums.ItemID.OBJECTIVE_8, ctenums.ItemID.APITEM,
         ctenums.ItemID.UNUSED_4A, ctenums.ItemID.UNUSED_56,
         ctenums.ItemID.UNUSED_57, ctenums.ItemID.UNUSED_58,
         ctenums.ItemID.UNUSED_59, ctenums.ItemID.UNUSED_EC,
@@ -257,7 +257,7 @@ class ShopOptions:
     30: [cons_c], 5: [cons_b], 2: [cons_a], 1:[cons_s],
     5: [weapon_d], 10: [weapon_c], 5: [weapon_b], 2: [weapon_a], 1:[weapon_s],
     5: [armor_d], 10: [armor_c], 5: [armor_b], 2:[armor_a], 1:[ armor_s],
-    5: [accessory_d], 10: [accessory_c], 
+    5: [accessory_d], 10: [accessory_c],
     5: [accessory_b], 2:[accessory_a], 1:[accessory_s],
     1: [rock],
     1: [key_progression],
@@ -376,7 +376,7 @@ class ShopOptions:
                 30: [cons_c], 5: [cons_b], [2:cons_a], [1: cons_s],
                 5: [weapon_d], 10: [weapon_c], 5: [weapon_b], [2:weapon_a], [1: weapon_s],
                 5: [armor_d], 10: [armor_c], 5: [armor_b], [2:armor_a], [1: armor_s],
-                5: [accessory_d], 10: [accessory_c], 
+                5: [accessory_d], 10: [accessory_c],
                 5: [accessory_b], [2:accessory_a], [1: accessory_s],
                 1: [accessory_rock]
                 1: [key_progression]
@@ -408,4 +408,3 @@ class ShopOptions:
         return argumenttypes.extract_from_namespace(
             cls, arg_names=cls.get_argument_spec().keys(), namespace=namespace
         )
-

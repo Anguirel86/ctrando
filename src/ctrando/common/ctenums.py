@@ -644,7 +644,7 @@ class ItemID(StrIntEnum):
     IRON_FIST = 0x47
     BRONZEFIST = 0x48
     PACIFIST = 0x49
-    UNUSED_4A = 0x4A
+    APITEM = 0x4A
     DARKSCYTHE = 0x4B
     HURRICANE = 0x4C
     STARSCYTHE = 0x4D
