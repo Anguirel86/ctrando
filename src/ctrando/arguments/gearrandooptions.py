@@ -3,11 +3,12 @@ import argparse
 from collections.abc import Iterable
 import enum
 import functools
+import itertools
 import typing
 
 from ctrando.arguments import argumenttypes as aty
 from ctrando.common.ctenums import ItemID, WeaponEffects as WE, BoostID
-from ctrando.common import distribution
+from ctrando.common import distribution, ctenums
 
 
 class BronzeFistPolicy(enum.StrEnum):
@@ -388,3 +389,124 @@ class GearRandoOptions:
             ]
         obj = aty.extract_from_namespace(cls,arg_names, namespace)
         return obj
+
+
+class EquipRandoScheme(enum.StrEnum):
+    VANILLA = "vanilla"
+    RANDOM_TYPE = "random_type"
+    RANDOM_ALL = "random_all"
+
+
+class ArmorTypes(enum.StrEnum):
+    NORMAL = "normal"
+    DRESS = "dress"
+    HEAVY_ARMOR = "heavy_armor"
+    PERSONAL = "personal"
+
+class EquipRandoOptions:
+    _default_equipable_rando_scheme: typing.ClassVar[EquipRandoScheme] = EquipRandoScheme.VANILLA
+    _default_char_gain_type_percent: typing.ClassVar[float] = 50.0
+    _default_char_lose_type_percent: typing.ClassVar[float] = 50.0
+    _default_gain_equip_percent: typing.ClassVar[float] = 50.0
+
+
+    def __init__(
+            self,
+            equipable_rando_scheme: EquipRandoScheme = _default_equipable_rando_scheme,
+            equip_type_gain_chance_dict: dict[tuple[ctenums.CharID, ArmorTypes], float] | None = None,
+            equip_type_lose_chance_dict: dict[tuple[ctenums.CharID, ArmorTypes], float] | None = None,
+            equip_chance_dict: dict[ctenums.CharID, float] | None = None
+    ):
+        self.equipable_rando_scheme = equipable_rando_scheme
+        self.equip_type_gain_chance_dict =  {
+            (char, armor_type): self._default_char_gain_type_percent
+            for char, armor_type in itertools.product(ctenums.CharID, ArmorTypes)
+        }
+        if equip_type_gain_chance_dict is not None:
+            self.equip_type_gain_chance_dict.update(equip_type_gain_chance_dict)
+
+        self.equip_type_lose_chance_dict = {
+            (char, armor_type): self._default_char_lose_type_percent
+            for char, armor_type in itertools.product(ctenums.CharID, ArmorTypes)
+        }
+        if equip_type_lose_chance_dict is not None:
+            self.equip_type_lose_chance_dict.update(equip_type_lose_chance_dict)
+
+        self.equip_chance_dict = {
+            char_id: self._default_gain_equip_percent for char_id in ctenums.CharID
+        }
+        if equip_chance_dict is not None:
+            self.equip_chance_dict.update(equip_chance_dict)
+
+
+    @classmethod
+    def get_argument_spec(cls) -> aty.ArgSpec:
+        spec: aty.ArgSpec = {
+            "equipable_rando_scheme": aty.arg_from_enum(
+                EquipRandoScheme, cls._default_equipable_rando_scheme,
+                "Method for choosing who can equip what"
+            )
+        }
+
+        for armor_type in ArmorTypes:
+            if armor_type != ArmorTypes.NORMAL:
+                modifiers = ["lose"]
+            else:
+                modifiers = ["gain", "lose"]
+
+            chars = list(ctenums.CharID)
+            for char, modifier in itertools.product(chars, modifiers):
+                default = cls._default_char_gain_type_percent if modifier == "gain" \
+                        else cls._default_char_lose_type_percent
+                attr_name = f"{char.name.lower()}_{modifier}_equip_{armor_type}_percent"
+                spec[attr_name] = aty.DiscreteNumericalArg(
+                    0, 100, 5,
+                    int(default),
+                    f"Chance for {char.name.lower()} to {modifier} use of {armor_type} type gear (random_type scheme)",
+                    type_fn=int
+                )
+
+
+        for char_id in ctenums.CharID:
+            attr_name = f"{char_id.name.lower()}_can_equip_percent"
+            spec[attr_name] = aty.DiscreteNumericalArg(
+                0, 100, 5, int(cls._default_gain_equip_percent),
+                f"Chance for {char_id.name.lower()} to be able to equip an armor (random_all scheme)",
+                type_fn=int
+            )
+
+        return spec
+
+    @classmethod
+    def add_group_to_parser(cls, parser: argparse.ArgumentParser):
+        group = parser.add_argument_group("Equipability Randomization Settings")
+        for attr_name, arg in cls.get_argument_spec().items():
+            arg_name = aty.attr_name_to_arg_name(attr_name)
+            arg.add_to_argparse(arg_name, group)
+
+
+    @classmethod
+    def extract_from_namespace(cls, namespace: argparse.Namespace) -> typing.Self:
+        equipable_rando_scheme = getattr(namespace, "equipable_rando_scheme", cls._default_equipable_rando_scheme)
+
+        gain_equip_type_dict: dict[tuple[ctenums.CharID, ArmorTypes], float] = dict()
+        lose_equip_type_dict: dict[tuple[ctenums.CharID, ArmorTypes], float] = dict()
+        for char_id, armor_type in itertools.product(ctenums.CharID, ArmorTypes):
+            char_name = char_id.name.lower()
+            attr_name = f"{char_name}_gain_equip_{armor_type}_percent"
+            if hasattr(namespace, attr_name):
+                gain_equip_type_dict[(char_id, armor_type)] = getattr(namespace, attr_name)
+
+            attr_name = f"{char_name}_lose_equip_{armor_type}_percent"
+            if hasattr(namespace, attr_name):
+                lose_equip_type_dict[(char_id, armor_type)] = getattr(namespace, attr_name)
+
+        can_equip_dict: dict[ctenums.CharID, float] = dict()
+        for char_id in ctenums.CharID:
+            char_name = char_id.name.lower()
+            attr_name = f"{char_name}_can_equip_percent"
+            if hasattr(namespace, attr_name):
+                can_equip_dict[char_id] = getattr(namespace, attr_name)
+
+
+        return cls(equipable_rando_scheme, gain_equip_type_dict, lose_equip_type_dict, can_equip_dict)
