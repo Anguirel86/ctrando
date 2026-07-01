@@ -400,6 +400,9 @@ class ItemSecondaryData(ItemData):
         self._data[0] &= 0xFF - 0x10
         self._data[0] |= 0x10*(val is False)
 
+    def get_equippable_by_byte(self) -> int:
+        return self._data[3] & 0xFE
+
     def get_equipable_by(self) -> list[ctenums.CharID]:
         equip_list = []
         for char in list(ctenums.CharID):

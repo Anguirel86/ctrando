@@ -495,18 +495,18 @@ class EquipRandoOptions:
             char_name = char_id.name.lower()
             attr_name = f"{char_name}_gain_equip_{armor_type}_percent"
             if hasattr(namespace, attr_name):
-                gain_equip_type_dict[(char_id, armor_type)] = getattr(namespace, attr_name)
+                gain_equip_type_dict[(char_id, armor_type)] = float(getattr(namespace, attr_name)/100.0)
 
             attr_name = f"{char_name}_lose_equip_{armor_type}_percent"
             if hasattr(namespace, attr_name):
-                lose_equip_type_dict[(char_id, armor_type)] = getattr(namespace, attr_name)
+                lose_equip_type_dict[(char_id, armor_type)] = float(getattr(namespace, attr_name)/100.0)
 
         can_equip_dict: dict[ctenums.CharID, float] = dict()
         for char_id in ctenums.CharID:
             char_name = char_id.name.lower()
             attr_name = f"{char_name}_can_equip_percent"
             if hasattr(namespace, attr_name):
-                can_equip_dict[char_id] = getattr(namespace, attr_name)
+                can_equip_dict[char_id] = float(getattr(namespace, attr_name) / 100.0)
 
 
         return cls(equipable_rando_scheme, gain_equip_type_dict, lose_equip_type_dict, can_equip_dict)

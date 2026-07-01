@@ -207,6 +207,7 @@ class Settings:
             character_options: characteroptions.CharacterOptions = characteroptions.CharacterOptions(),
             boss_scaling_options: enemyoptions.BossScalingOptions = enemyoptions.BossScalingOptions(),
             plando_options: plandooptions.PlandoOptions = plandooptions.PlandoOptions(),
+            equipable_options: gearrandooptions.EquipRandoOptions = gearrandooptions.GearRandoOptions(),
     ):
         self.general_options = general_options
         self.battle_rewards = battle_rewards
@@ -225,6 +226,7 @@ class Settings:
         self.character_options = character_options
         self.boss_scaling_options = boss_scaling_options
         self.plando_options = plando_options
+        self.equipable_options = equipable_options
 
     @classmethod
     def get_argument_spec(cls) -> argumenttypes.ArgSpec:
@@ -245,7 +247,8 @@ class Settings:
             "gear_rando_options": gearrandooptions.GearRandoOptions.get_argument_spec(),
             "character_options": characteroptions.CharacterOptions.get_argument_spec(),
             "boss_scaling_options": enemyoptions.BossScalingOptions.get_argument_spec(),
-            "plando_options": plandooptions.PlandoOptions.get_argument_spec()
+            "plando_options": plandooptions.PlandoOptions.get_argument_spec(),
+            "equipable_options": gearrandooptions.EquipRandoOptions.get_argument_spec(),
         }
 
     @classmethod
@@ -267,7 +270,8 @@ class Settings:
             gear_rando_options=gearrandooptions.GearRandoOptions.extract_from_namespace(namespace),
             character_options=characteroptions.CharacterOptions.extract_from_namespace(namespace),
             boss_scaling_options=enemyoptions.BossScalingOptions.extract_from_namespace(namespace),
-            plando_options=plandooptions.PlandoOptions.extract_from_namespace(namespace)
+            plando_options=plandooptions.PlandoOptions.extract_from_namespace(namespace),
+            equipable_options=gearrandooptions.EquipRandoOptions.extract_from_namespace(namespace)
         )
 
 
