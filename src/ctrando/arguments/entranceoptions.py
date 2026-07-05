@@ -37,7 +37,7 @@ class EntranceShufflerOptions:
         OWExit.SNAIL_STOP, OWExit.KEEPERS_DOME, OWExit.TATAS_HOUSE,
     )
     _default_vanilla_spots: typing.ClassVar[tuple[OWExit, ...]] = ()
-    _num_preserve_spots_groups: typing.ClassVar[int] = 4
+    _num_preserve_spots_groups: typing.ClassVar[int] = 5
 
     @classmethod
     def get_argument_spec(cls) -> aty.ArgSpec:
