@@ -307,5 +307,6 @@ def get_parser() -> argparse.ArgumentParser:
     characteroptions.CharacterOptions.add_group_to_parser(parser)
     enemyoptions.BossScalingOptions.add_group_to_parser(parser)
     plandooptions.PlandoOptions.add_group_to_argparse(parser)
+    gearrandooptions.EquipRandoOptions.add_group_to_parser(parser)
 
     return parser

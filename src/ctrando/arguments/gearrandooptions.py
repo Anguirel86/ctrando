@@ -405,10 +405,28 @@ class ArmorTypes(enum.StrEnum):
 
 class EquipRandoOptions:
     _default_equipable_rando_scheme: typing.ClassVar[EquipRandoScheme] = EquipRandoScheme.VANILLA
-    _default_char_gain_type_percent: typing.ClassVar[float] = 50.0
-    _default_char_lose_type_percent: typing.ClassVar[float] = 50.0
-    _default_gain_equip_percent: typing.ClassVar[float] = 50.0
+    _default_char_gain_type_percent: typing.ClassVar[float] = 0.50
+    _default_char_gain_personal_percent: typing.ClassVar[float] = 0.10
+    _default_char_lose_type_percent: typing.ClassVar[float] = 0.50
+    _default_gain_equip_percent: typing.ClassVar[float] = 0.50
 
+    @classmethod
+    def get_default_gain_chance(cls, armor_type: ArmorTypes) -> float:
+        if armor_type == ArmorTypes.NORMAL:
+            return 1.0
+        elif armor_type in (ArmorTypes.HEAVY_ARMOR, ArmorTypes.DRESS):
+            return cls._default_char_gain_type_percent
+        else:
+            return cls._default_char_gain_personal_percent
+
+    @classmethod
+    def get_default_lose_chance(cls, armor_type: ArmorTypes) -> float:
+        if armor_type == ArmorTypes.NORMAL:
+            return 0.10
+        elif armor_type in (ArmorTypes.HEAVY_ARMOR, ArmorTypes.DRESS):
+            return 0.20
+        else:
+            return 0.0
 
     def __init__(
             self,
@@ -419,14 +437,14 @@ class EquipRandoOptions:
     ):
         self.equipable_rando_scheme = equipable_rando_scheme
         self.equip_type_gain_chance_dict =  {
-            (char, armor_type): self._default_char_gain_type_percent
+            (char, armor_type): self.get_default_gain_chance(armor_type)
             for char, armor_type in itertools.product(ctenums.CharID, ArmorTypes)
         }
         if equip_type_gain_chance_dict is not None:
             self.equip_type_gain_chance_dict.update(equip_type_gain_chance_dict)
 
         self.equip_type_lose_chance_dict = {
-            (char, armor_type): self._default_char_lose_type_percent
+            (char, armor_type): self.get_default_lose_chance(armor_type)
             for char, armor_type in itertools.product(ctenums.CharID, ArmorTypes)
         }
         if equip_type_lose_chance_dict is not None:
@@ -449,7 +467,7 @@ class EquipRandoOptions:
         }
 
         for armor_type in ArmorTypes:
-            if armor_type != ArmorTypes.NORMAL:
+            if armor_type == ArmorTypes.NORMAL:
                 modifiers = ["lose"]
             else:
                 modifiers = ["gain", "lose"]
