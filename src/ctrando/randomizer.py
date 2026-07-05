@@ -37,7 +37,7 @@ from ctrando.entranceshuffler import (
     portalshuffle
 )
 from ctrando.entranceshuffler.entrancefiller import update_starting_rewards
-from ctrando.items import gearrando, itemdata
+from ctrando.items import gearrando, itemdata, equiprando
 from ctrando.locations.scriptmanager import ScriptManager
 from ctrando.objectives import objectivewriter, objectivelogic
 from ctrando.postrando import postrandowriter, flashreduce
@@ -165,7 +165,7 @@ def extract_settings(*in_args: str) -> arguments.Settings:
     args = parser.parse_args(list(in_args) + additional_args)
 
     settings = arguments.Settings.extract_from_namespace(args)
-    print(f"Seed: {settings.general_options.seed}")
+    # print(f"Seed: {settings.general_options.seed}")
     return settings
 
 
@@ -363,6 +363,7 @@ def get_random_config(
     gearrando.randomize_good_accessory_effects(
         config.item_db, settings.gear_rando_options, rng)
     gearrando.randomize_gear(config.item_db, settings.gear_rando_options, rng)
+    equiprando.apply_equipable_rando(config.item_db, settings.equipable_options, rng)
     config.item_db.update_all_descriptions()
 
     objectivewriter.update_objective_names_descriptions(
@@ -859,7 +860,7 @@ def main():
 
     # import time
     # x = time.time()
-    out_rom = get_ctrom_from_config(ct_rom, settings, config, make_tf_friendly=True)
+    out_rom = get_ctrom_from_config(ct_rom, settings, config, make_tf_friendly=False)
     # y = time.time()
     # print(y-x)
 
