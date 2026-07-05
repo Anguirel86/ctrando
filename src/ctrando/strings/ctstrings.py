@@ -119,6 +119,40 @@ _default_huff_pickle = \
 _default_huff_table_b = _default_huff_pickle.read_bytes()
 _default_huff_table = pickle.loads(_default_huff_table_b)
 
+_line_width_pixels = 231  # 242
+def get_max_line_width_px():
+    return _line_width_pixels
+
+_symbol_pixel_width: dict[str, int] = {
+    "A": 7, "B": 7, "C": 7, "D": 7, "E": 6, "F": 6, "G": 7, "H": 7, "I": 5, "J": 7,
+    "K": 8, "L": 6, "M": 9, "N": 8, "O": 7, "P": 7, "Q": 7, "R": 7, "S": 6, "T": 7,
+    "U": 7, "V": 7, "W": 11, "X": 7, "Y": 7, "Z": 7,
+    "a": 7, "b": 7, "c": 6, "d": 7, "e": 7, "f": 6 , "g": 7, "h": 7, "i": 3, "j": 6,
+    "k": 7, "l": 3, "m": 11, "n": 7, "o": 7, "p": 7, "q": 7, "r": 6, "s": 6, "t": 5,
+    "u": 7, "v": 7, "w": 11, "x": 7, "y": 7, "z": 7,
+    "1": 4, "2": 7, "3": 7, "4": 8,"5": 7,"6": 7, "7": 7, "8": 7, "9": 7, "0": 7,
+    "!": 3, "?": 7, "/": 6, "{\"1}": 8, "{\"2}": 6, ":": 3, "&": 9, "(": 4, ")": 4, "'": 3,
+    ".": 3, ",": 3, "=": 8, "-": 8, "+": 8, "%": 9, "{noteEE}": 11, " ": 4,"{:heart:}": 11, "{...}": -1,
+    "{:inf:}": 12, "{note}": 11,
+    # "{null}": 0, "{item}": 11*11,
+}
+_byte_pixel_width: dict[int, int] = {
+    ind+0xA0: val
+    for ind, (key, val) in enumerate(_symbol_pixel_width.items())
+}
+def get_pixel_width(ct_bytes: typing.ByteString | int | str) -> int:
+    if isinstance(ct_bytes, int):
+        ct_bytes = bytes([ct_bytes])
+    elif isinstance(ct_bytes, str):
+        ct_bytes = CTString.from_ascii(ct_bytes)
+
+    width = 0
+    for char in ct_bytes:
+        width += _byte_pixel_width[char]
+    width = sum(_byte_pixel_width[char] for char in  ct_bytes)
+    return width
+
+
 # CTString extends bytearray because it is just a bytearray with a few extra
 # methods for converting to python string and compression.
 class CTString(bytearray):
@@ -476,9 +510,6 @@ def get_huffman_table(rom: bytearray) -> list[bytearray]:
 
 def main():
 
-    string = CTString.ct_bytes_to_ascii(bytes.fromhex("E1 29 C1 D8 88 D8 E0 4D C3 AD D8 E0 10 C7 F1 88 D8 E0 08 88 C3 9D D8 E0 13 E2 57 34 A2 9F D8 88 D8 E1 20 25 F1 E3 D9 E0 3D C5 00"))
-    print(string)
-    input()
     with open("/home/ross/Documents/ct.sfc", "rb") as infile:
         rom = infile.read()
         get_huffman_table(rom)

@@ -3,12 +3,64 @@ Module to alter treasure chest text boxes to include the item description.
 
 Mainly useful for gear rando, but this also give KI descriptions.
 """
+from __future__ import annotations
 from typing import Optional
 from ctrando.asm import instructions as inst, assemble
 
 from ctrando.common import ctrom, byteops, ctenums
 from ctrando.items import itemdata
+from ctrando.strings import ctstrings
 from ctrando.strings.ctstrings import CTNameString
+
+
+_charid_abbrev_dict: dict[ctenums.CharID, str] ={
+    ctenums.CharID.CRONO: "C",
+    ctenums.CharID.MARLE: "M",
+    ctenums.CharID.LUCCA: "L",
+    ctenums.CharID.ROBO: "R",
+    ctenums.CharID.FROG: "F",
+    ctenums.CharID.AYLA: "A",
+    ctenums.CharID.MAGUS: "J"
+}
+def get_equipable_str(item: itemdata.Item) -> str:
+    equipable_chars = item.secondary_stats.get_equipable_by()
+    if len(equipable_chars) == 7:
+        return "(All)"
+
+    if len(equipable_chars) == 0:
+        return "(None)"
+
+    equipable_chars = sorted(equipable_chars)
+    ret_str = "(" + "".join(_charid_abbrev_dict[x] for x in equipable_chars) + ")"
+    return ret_str
+
+
+def get_desc_str(item: itemdata.Item, max_desc_len: int = 0x28) -> CTNameString:
+    desc_str = item.get_desc_as_str()
+    equip_str = ""
+    equip_px_width = 0
+
+    if isinstance(item.stats, itemdata.ArmorStats | itemdata.AccessoryStats) and desc_str:
+        equip_str = " " + get_equipable_str(item)
+        equip_px_width = ctstrings.get_pixel_width(equip_str)
+
+    width = 0
+    max_width = ctstrings.get_max_line_width_px() - equip_px_width
+
+    ind = 0
+    while ind < len(desc_str):
+        char, next_ind = ctstrings.CTString.get_token(desc_str, ind)
+        char_width = ctstrings.get_pixel_width(char)
+        if width + char_width >= max_width:
+            break
+        width += char_width
+        ind = next_ind
+    else:
+        ind += 1
+
+    out_str = desc_str[:ind] + equip_str
+    ret = CTNameString.from_string(out_str, length=max_desc_len)
+    return ret
 
 
 def write_desc_strings(
@@ -28,7 +80,6 @@ def write_desc_strings(
 
     # Hint the size to be in the expanded region.
     start = ct_rom.space_manager.get_free_addr(total_size, 0x410000)
-
     ct_rom.seek(start)
 
     valid_item_ids = set(x.value for x in ctenums.ItemID)
@@ -36,7 +87,8 @@ def write_desc_strings(
         if index in valid_item_ids:
             item_id = ctenums.ItemID(index)
             desc_str = item_db[item_id].get_desc_as_str()
-            desc = CTNameString.from_string(desc_str, length=desc_size)
+            # desc = CTNameString.from_string(desc_str, length=desc_size)
+            desc = get_desc_str(item_db[item_id], max_desc_len)
             if not desc_str:
                 desc[0] = 0xFF
         else:
@@ -75,12 +127,6 @@ def add_strlen_func(ct_rom: ctrom.CTRom, max_length: int = 0x28) -> int:
     ct_rom.write(routine_b, ctrom.freespace.FSWriteType.MARK_USED)
 
     return start
-
-
-def get_desc_char_routine(desc_start: int, desc_size: int) -> assemble.ASMSnippet:
-    """
-    Get an asm fragment that will handle the special description symbol.
-    """
 
 
 def add_get_desc_char(ct_rom: ctrom.CTRom, desc_start: int, desc_size: int = 0x28):
@@ -209,3 +255,28 @@ def main():
 
 if __name__ == "__main__":
     main()
+
+
+# Looking at Substrings
+# --- Substring ID in A
+# C258D4  85 3B          STA $3B
+# C258D6  38             SEC
+# C258D7  E9 21          SBC #$21
+# C258D9  0A             ASL
+# C258DA  AA             TAX
+# C258DB  C2 20          REP #$20
+# C258DD  BF 00 FA DE    LDA $DEFA00,X
+# --- Load a pointer from the substring table
+# C258E1  85 37          STA $37
+# C258E3  A9 00 00       LDA #$0000
+# C258E6  E2 20          SEP #$20
+# C258E8  A9 DE          LDA #$DE
+# C258EA  85 39          STA $39
+# C258EC  A7 37          LDA [$37]
+# C258EE  85 3A          STA $3A
+# C258F0  C2 20          REP #$20
+# C258F2  E6 37          INC $37
+# C258F4  E2 20          SEP #$20
+# C258F6  A9 01          LDA #$01
+# C258F8  85 30          STA $30
+# C258FA  4C F5 5B       JMP $5BF5
