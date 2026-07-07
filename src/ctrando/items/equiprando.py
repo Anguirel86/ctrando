@@ -52,7 +52,7 @@ def apply_total_equip_rando(
         rng: random.RNGType
 ):
     available_item_ids = (
-        ctenums.ItemID(ind) for ind in range(ctenums.ItemID.HIDE_CAP, ctenums.ItemID.ACCESSORY_END_BC)
+        ctenums.ItemID(ind) for ind in range(ctenums.ItemID.HIDE_TUNIC, ctenums.ItemID.ACCESSORY_END_BC)
         if ctenums.ItemID(ind) not in _restrictions
     )
     for item_id in available_item_ids:
