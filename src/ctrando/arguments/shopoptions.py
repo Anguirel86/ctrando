@@ -266,6 +266,7 @@ class ShopOptions:
     _default_shop_item_dist: distribution.Distribution[ctenums.ItemID] = get_shop_distribution(
         _default_shop_item_spec
     )
+    _default_show_all_chars_in_shop: typing.ClassVar[bool] = False
 
     def __init__(
             self,
@@ -279,7 +280,8 @@ class ShopOptions:
             item_price_max_multiplier: float = _default_item_price_max_multiplier,
             item_price_randomization_exclusions: typing.Optional[list[ctenums.ItemID]] = None,
             guaranteed_shop_items: typing.Sequence[ctenums.ItemID] = _default_guaranteed_shop_items,
-            custom_shop_item_spec: distribution.Distribution[ctenums.ItemID] = _default_shop_item_dist
+            custom_shop_item_spec: distribution.Distribution[ctenums.ItemID] = _default_shop_item_dist,
+            show_all_chars_in_shop: bool = _default_show_all_chars_in_shop
     ):
         self.shop_inventory_randomization = shop_inventory_randomization
         self.shop_capacity_randomization = shop_capacity_randomization
@@ -310,6 +312,7 @@ class ShopOptions:
 
         self.guaranteed_shop_items = list(guaranteed_shop_items)
         self.custom_shop_item_spec = custom_shop_item_spec
+        self.show_all_chars_in_shop = show_all_chars_in_shop
 
     @classmethod
     def get_argument_spec(cls) -> argumenttypes.ArgSpec:
@@ -379,6 +382,9 @@ class ShopOptions:
                 1: [key_progression]
                 2: [key_nonprogression]
                 """
+            ),
+            "show_all_chars_in_shop": argumenttypes.FlagArg(
+                "All characters will be shown when shopping."
             )
         }
 

@@ -15,7 +15,7 @@ from ctrando.arguments import (
 )
 from ctrando.enemydata import enemystats, rewardrando, enemyrando
 from ctrando.logic import logictweaks, logictypes
-from ctrando.shops import shoptypes, shoprando
+from ctrando.shops import shoptypes, shoprando, shopchars
 
 from ctrando.attacks import (
     pctechrandomizer, techdescriptions, pctech, animationscript, scriptreassign,
@@ -448,6 +448,9 @@ def get_ctrom_from_config(
     effecttypes.expand_effect_mods(
         ct_rom, config.pctech_manager
     )
+
+    if settings.shop_options.show_all_chars_in_shop:
+        shopchars.patch_shop_visibility(ct_rom)
 
     print("Applying Openworld Scripts...", end="")
     a = time.time()
