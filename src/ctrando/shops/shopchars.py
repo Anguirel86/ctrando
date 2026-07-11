@@ -88,6 +88,8 @@ def patch_shop_visibility(
         inst.LDA(0, AM.IMM8),
         inst.TAX(),
         "comp_loop_st",
+        inst.CPY(7, AM.IMM8),
+        inst.BCS("out"),
         inst.CMP(shop_pcid_start_abs, AM.ABS_X),
         inst.BEQ("comp_loop_end"),
         inst.INX(),
@@ -118,7 +120,7 @@ def patch_shop_visibility(
     ct_rom.write(inst.RTS().to_bytearray())
     block_start = ct_rom.tell()
     ct_rom.space_manager.mark_block(
-        (ct_rom.tell(), block_end), ctrom.freespace.FSWriteType.MARK_FREE
+        (block_start, block_end), ctrom.freespace.FSWriteType.MARK_FREE
     )
 
     # print(block_end-block_start)
