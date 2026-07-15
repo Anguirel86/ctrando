@@ -17,6 +17,9 @@ classifiers = [
 ]
 license = "MIT"
 license-files = ["LICEN[CS]E*"]
+dependencies = [
+    "numpy==2.5.1",
+]
 
 [tool.setuptools]
 ext-modules = [
