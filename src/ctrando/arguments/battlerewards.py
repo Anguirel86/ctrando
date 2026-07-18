@@ -29,7 +29,7 @@ _unusable_items: frozenset[ctenums.ItemID] = frozenset([
     ctenums.ItemID.SCALING_LEVEL, ctenums.ItemID.OBJECTIVE_1,
     ctenums.ItemID.OBJECTIVE_2, ctenums.ItemID.OBJECTIVE_3, ctenums.ItemID.OBJECTIVE_4,
     ctenums.ItemID.OBJECTIVE_5, ctenums.ItemID.OBJECTIVE_6, ctenums.ItemID.OBJECTIVE_7,
-    ctenums.ItemID.OBJECTIVE_7, ctenums.ItemID.OBJECTIVE_8, ctenums.ItemID.UNUSED_4A,
+    ctenums.ItemID.OBJECTIVE_7, ctenums.ItemID.OBJECTIVE_8, ctenums.ItemID.APITEM,
     ctenums.ItemID.MASAMUNE_0_ATK,
     ctenums.ItemID.UNUSED_56, ctenums.ItemID.UNUSED_57, ctenums.ItemID.UNUSED_58,
     ctenums.ItemID.UNUSED_59, ctenums.ItemID.WEAPON_END_5A, ctenums.ItemID.ARMOR_END_7B,
