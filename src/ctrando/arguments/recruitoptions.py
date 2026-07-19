@@ -112,7 +112,7 @@ class RecruitOptions:
                 type_fn=int
             )
             ret_dict[f"{name}_min_techlevel"] = argumenttypes.DiscreteNumericalArg(
-                1, 8, 1, data.min_tech_level,
+                0, 8, 1, data.min_tech_level,
                 f"Minimum techlevel at which the {name} recruit can join (default: {data.min_tech_level})",
                 type_fn=int
             )
